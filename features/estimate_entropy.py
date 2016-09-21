@@ -1,3 +1,5 @@
+# caculating the entropy of the distribution of cluster labels (lab)
+
 import numpy as np
 
 def estimate_entropy(lab):
