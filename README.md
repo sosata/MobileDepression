@@ -1,2 +1,2 @@
 # MobileDepression
-Using mobile phone sensor data to predict depression
+Using mobile phone sensor data to predict depression.
