@@ -56,6 +56,7 @@ print 'location variance - pre-filter: {}'.format(estimate_variance(data))
 print 'location variance - post-filter: {}'.format(estimate_variance(data_filtered))
 
 
+
 # In[11]:
 
 import matplotlib.pyplot as plt
@@ -71,4 +72,24 @@ plt.plot(centers[:,1],centers[:,0] ,'.',markersize=2, color=(1,0,0))
 plt.figure(figsize=(12,12))
 plt.plot(labs,'.',color=(0,0,0),markersize=5)
 plt.ylim([-1,centers.shape[0]])
+
+
+# In[7]:
+
+import sys
+import pandas as pd
+import numpy as np
+sys.path.insert(0, '/home/sohrob/Dropbox/Code/MobileDepression/features')
+from act_percentage import act_percentage
+
+data = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/act.csv',sep='\t',header=None)
+
+# activity
+
+print 'activity percentages: {}'.format(act_percentage(data))
+
+
+# In[8]:
+
+np.sum(act_percentage(data))
 
