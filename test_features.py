@@ -74,7 +74,7 @@ plt.plot(labs,'.',color=(0,0,0),markersize=5)
 plt.ylim([-1,centers.shape[0]])
 
 
-# In[7]:
+# In[1]:
 
 import sys
 import pandas as pd
@@ -89,7 +89,7 @@ data = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/act.csv',sep='\t',he
 print 'activity percentages: {}'.format(act_percentage(data))
 
 
-# In[8]:
+# In[2]:
 
 np.sum(act_percentage(data))
 
