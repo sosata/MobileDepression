@@ -1,24 +1,26 @@
 
 # coding: utf-8
 
-# In[10]:
+# In[29]:
 
 import pandas as pd
 import numpy as np
 from scipy import stats
 
-data_act = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/act.csv',sep='\t',header=None)
-data_aud = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/aud.csv',sep='\t',header=None)
-data_bat = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/bat.csv',sep='\t',header=None)
-data_cal = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/cal.csv',sep='\t',header=None)
-data_coe = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/coe.csv',sep='\t',header=None)
-data_fus = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/fus.csv',sep='\t',header=None)
-data_scr = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/scr.csv',sep='\t',header=None)
-data_wif = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/wif.csv',sep='\t',header=None)
-target = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/emm.csv',sep='\t',header=None)
+subject = '919141'
+
+data_act = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/act.csv',sep='\t',header=None)
+data_aud = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/aud.csv',sep='\t',header=None)
+data_bat = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/bat.csv',sep='\t',header=None)
+data_cal = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/cal.csv',sep='\t',header=None)
+data_coe = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/coe.csv',sep='\t',header=None)
+data_fus = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/fus.csv',sep='\t',header=None)
+data_scr = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/scr.csv',sep='\t',header=None)
+data_wif = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/wif.csv',sep='\t',header=None)
+target = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/emm.csv',sep='\t',header=None)
 
 
-# In[11]:
+# In[30]:
 
 # adapting data to neural net
 
@@ -29,7 +31,8 @@ for (i,t1) in enumerate(target[0]):
     lat = np.nan
     lng = np.nan
     for t2 in np.arange(t1-win, t1, deltat):
-        # capturing gps data
+        
+        # GPS data
         ind = np.where(data_fus[0].between(t2, t2+deltat, inclusive=True))[0]
         if ind.size:
             lat = np.nanmean(data_fus[1][ind])
@@ -37,7 +40,7 @@ for (i,t1) in enumerate(target[0]):
 #         else:
             # nothing, just keep the last one
             
-        # capturing communication data
+        # communication data
         ind = np.where(data_coe[0].between(t2, t2+deltat, inclusive=True))[0]
         if ind.size:
             sms = np.sum(data_coe[3][ind]=='SMS')
@@ -80,8 +83,8 @@ for (i,t1) in enumerate(target[0]):
             aud_amp = np.mean(data_aud[2][ind])
             aud_frq = np.mean(data_aud[3][ind])
         else:
-            aud_amp = -10.0
-            aud_frq = -100.0
+            aud_amp = 0
+            aud_frq = 0
 
         # call data
         ind = np.where(data_cal[0].between(t2, t2+deltat, inclusive=True))[0]
@@ -113,9 +116,8 @@ for (i,t1) in enumerate(target[0]):
 #         stress = target.loc[i,2]
         
         # input vector
-#         ft = np.array([lat, lng, hour, dow, stress, sms, phone, incoming, outgoing, missed, act_onfoot,\
-#                       act_still, act_invehicle, act_tilting, act_confidence])
-        ft = np.array([lat, lng, hour, dow, sms, phone, incoming, outgoing, missed, act_onfoot,                      act_still, act_invehicle, act_tilting, act_confidence,                      scr_n,                      aud_amp, aud_frq,                      cal_dur,                      bat_charge, bat_state,                      wif_n])
+        ft = np.array([lat, lng,                       hour, dow,                       sms, phone, incoming, outgoing, missed,                       act_onfoot, act_still, act_invehicle, act_tilting, act_confidence,                       scr_n,                       aud_amp, aud_frq,                       cal_dur,                       bat_charge, bat_state,                       wif_n])
+        
         ft = ft.reshape(1,ft.size)
         
         # adding to input matrix
@@ -135,12 +137,7 @@ for (i,t1) in enumerate(target[0]):
         y = np.append(y, mood, axis=0)
 
 
-# In[ ]:
-
-bat_state[0][0]
-
-
-# In[12]:
+# In[31]:
 
 # remove samples that contain nan
 
@@ -153,7 +150,7 @@ x = np.delete(x, ind_del, axis=0)
 y = np.delete(y, ind_del, axis=0)
 
 
-# In[13]:
+# In[78]:
 
 # build the network
 
@@ -163,9 +160,10 @@ from keras import regularizers, optimizers
 
 reg = regularizers.WeightRegularizer(l1=0, l2=0)
 optim = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+# optim = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 
 model = Sequential()
-model.add(LSTM(output_dim=100, input_dim=x.shape[2], return_sequences=False, activation='tanh', W_regularizer=reg,              dropout_W=0,dropout_U=0))
+model.add(LSTM(output_dim=100, input_dim=x.shape[2], return_sequences=False, activation='tanh', W_regularizer=reg,              dropout_W=0.2, dropout_U=0.2))
 # model.add(Dense(20, activation='tanh'))
 model.add(Dense(50, activation='tanh'))
 model.add(Dense(y.shape[1], activation='linear'))
@@ -174,7 +172,7 @@ model.add(Dense(y.shape[1], activation='linear'))
 model.compile(optimizer=optim, loss='mse')
 
 
-# In[14]:
+# In[79]:
 
 # training
 
@@ -192,10 +190,10 @@ x_test = x_test - np.ones([x_test.shape[0],x_test.shape[1],1])*np.mean(np.mean(x
 
 # y = y - np.mean(y)
 
-model.fit(x_train, y_train, batch_size=1, verbose=1, nb_epoch=20, validation_data=(x_test,y_test))
+model.fit(x_train, y_train, batch_size=10, verbose=1, nb_epoch=10, validation_data=(x_test,y_test))
 
 
-# In[15]:
+# In[80]:
 
 # prediction
 
@@ -220,9 +218,4 @@ plt.xlim([0, y_test.shape[0]-1])
 plt.ylim([0, 9])
 plt.text(y_test.shape[0],9,'R2=%.2f' % (1-np.sum(np.power(y_pred-y_test,2))/np.sum(np.power(np.mean(y_test)-y_test,2))))
 plt.title('test')
-
-
-# In[8]:
-
-x_train.shape
 
