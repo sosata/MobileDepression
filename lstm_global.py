@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[12]:
 
 import pandas as pd
 import numpy as np
@@ -14,20 +14,57 @@ win = 24*3600
 data_dir = '/home/sohrob/Dropbox/Data/CS120/'
 subjects = os.listdir(data_dir)
 
-subjects = subjects[:5]
+# subjects = subjects[:10]
 
 for (s,subject) in enumerate(subjects):
     
     print s,
-    data_act = pd.read_csv(data_dir+subject+'/act.csv',sep='\t',header=None)
-    data_aud = pd.read_csv(data_dir+subject+'/aud.csv',sep='\t',header=None)
-    data_bat = pd.read_csv(data_dir+subject+'/bat.csv',sep='\t',header=None)
-    data_cal = pd.read_csv(data_dir+subject+'/cal.csv',sep='\t',header=None)
-    data_coe = pd.read_csv(data_dir+subject+'/coe.csv',sep='\t',header=None)
-    data_fus = pd.read_csv(data_dir+subject+'/fus.csv',sep='\t',header=None)
-    data_scr = pd.read_csv(data_dir+subject+'/scr.csv',sep='\t',header=None)
-    data_wif = pd.read_csv(data_dir+subject+'/wif.csv',sep='\t',header=None)
-    target = pd.read_csv(data_dir+subject+'/emm.csv',sep='\t',header=None)
+    if os.path.exists(data_dir+subject+'/act.csv'):
+        data_act = pd.read_csv(data_dir+subject+'/act.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/aud.csv'):
+        data_aud = pd.read_csv(data_dir+subject+'/aud.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/bat.csv'):
+        data_bat = pd.read_csv(data_dir+subject+'/bat.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/cal.csv'):
+        data_cal = pd.read_csv(data_dir+subject+'/cal.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/coe.csv'):
+        data_coe = pd.read_csv(data_dir+subject+'/coe.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/fus.csv'):
+        data_fus = pd.read_csv(data_dir+subject+'/fus.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/scr.csv'):
+        data_scr = pd.read_csv(data_dir+subject+'/scr.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/wif.csv'):
+        data_wif = pd.read_csv(data_dir+subject+'/wif.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    if os.path.exists(data_dir+subject+'/emm.csv'):
+        target = pd.read_csv(data_dir+subject+'/emm.csv',sep='\t',header=None)
+    else:
+        print ' skipping - no data'
+        continue
+    print
 
     for (i,t1) in enumerate(target[0]):
         lat = np.nan
@@ -145,7 +182,7 @@ for (s,subject) in enumerate(subjects):
 target
 
 
-# In[ ]:
+# In[4]:
 
 # remove samples that contain nan
 
@@ -158,7 +195,7 @@ x = np.delete(x, ind_del, axis=0)
 y = np.delete(y, ind_del, axis=0)
 
 
-# In[ ]:
+# In[9]:
 
 # build the network
 
@@ -167,9 +204,9 @@ from keras.layers import Dense, Activation, Flatten, LSTM, TimeDistributed
 from keras import regularizers, optimizers
 
 reg = regularizers.WeightRegularizer(l1=0, l2=0)
-# optim = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+optim = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 # optim = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-optim = optimizers.SGD(lr=0.01, momentum=0.9, nesterov=False)
+# optim = optimizers.SGD(lr=0.01, momentum=0.9, nesterov=False)
 
 model = Sequential()
 model.add(LSTM(output_dim=100, input_dim=x.shape[2], return_sequences=False, activation='tanh', W_regularizer=reg,              dropout_W=0.2, dropout_U=0.2))
@@ -181,7 +218,7 @@ model.add(Dense(y.shape[1], activation='linear'))
 model.compile(optimizer=optim, loss='mse')
 
 
-# In[ ]:
+# In[10]:
 
 # training
 
@@ -202,7 +239,7 @@ x_test = x_test - np.ones([x_test.shape[0],x_test.shape[1],1])*np.mean(np.mean(x
 model.fit(x_train, y_train, batch_size=10, verbose=1, nb_epoch=20, validation_data=(x_test,y_test))
 
 
-# In[ ]:
+# In[11]:
 
 # prediction
 
@@ -212,7 +249,7 @@ get_ipython().magic(u'matplotlib inline')
 y_pred_train = model.predict(x_train)
 y_pred = model.predict(x_test)
 
-plt.figure(figsize=[5,2])
+plt.figure(figsize=[10,2])
 plt.plot(y_train, color=(0,.5,0))
 plt.plot(y_pred_train, color=(0,0,0))
 plt.xlim([0, y_train.shape[0]-1])
@@ -220,7 +257,7 @@ plt.ylim([0, 9])
 plt.text(y_train.shape[0],9,'R2=%.2f' % (1-np.sum(np.power(y_pred_train-y_train,2))/np.sum(np.power(np.mean(y_train)-y_train,2))))
 plt.title('train')
 
-plt.figure(figsize=[5,2])
+plt.figure(figsize=[10,2])
 plt.plot(y_test, color=(0,.5,0))
 plt.plot(y_pred, color=(0,0,0))
 plt.xlim([0, y_test.shape[0]-1])
