@@ -7,7 +7,7 @@ import numpy as np
 import sklearn.cluster as skc
 import pandas as pd
 import sys
-sys.path.insert(0, '/home/sohrob/Dropbox/Code/MobileDepression/features')
+sys.path.insert(0, 'features')
 from cluster_kmeans import cluster_kmeans
 from filter_speed import filter_speed
 from estimate_distance import estimate_distance
@@ -15,7 +15,7 @@ from estimate_entropy import estimate_entropy
 from estimate_homestay import estimate_homestay
 from estimate_variance import estimate_variance
 
-data = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/fus.csv',sep='\t',header=None)
+data = pd.read_csv('/data/CS120/1022235/fus.csv',sep='\t',header=None)
 
 # centering 
 # this may be a wrong thing to do, because it removes the actual skewness of coordinates which are typically not seen on map
@@ -79,10 +79,10 @@ plt.ylim([-1,centers.shape[0]])
 import sys
 import pandas as pd
 import numpy as np
-sys.path.insert(0, '/home/sohrob/Dropbox/Code/MobileDepression/features')
+sys.path.insert(0, 'features')
 from act_percentage import act_percentage
 
-data = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/1022235/act.csv',sep='\t',header=None)
+data = pd.read_csv('/data/CS120/1022235/act.csv',sep='\t',header=None)
 
 # activity
 

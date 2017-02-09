@@ -9,15 +9,15 @@ from scipy import stats
 
 subject = '919141'
 
-data_act = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/act.csv',sep='\t',header=None)
-data_aud = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/aud.csv',sep='\t',header=None)
-data_bat = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/bat.csv',sep='\t',header=None)
-data_cal = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/cal.csv',sep='\t',header=None)
-data_coe = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/coe.csv',sep='\t',header=None)
-data_fus = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/fus.csv',sep='\t',header=None)
-data_scr = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/scr.csv',sep='\t',header=None)
-data_wif = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/wif.csv',sep='\t',header=None)
-target = pd.read_csv('/home/sohrob/Dropbox/Data/CS120/'+subject+'/emm.csv',sep='\t',header=None)
+data_act = pd.read_csv('/data/CS120/'+subject+'/act.csv',sep='\t',header=None)
+data_aud = pd.read_csv('/data/CS120/'+subject+'/aud.csv',sep='\t',header=None)
+data_bat = pd.read_csv('/data/CS120/'+subject+'/bat.csv',sep='\t',header=None)
+data_cal = pd.read_csv('/data/CS120/'+subject+'/cal.csv',sep='\t',header=None)
+data_coe = pd.read_csv('/data/CS120/'+subject+'/coe.csv',sep='\t',header=None)
+data_fus = pd.read_csv('/data/CS120/'+subject+'/fus.csv',sep='\t',header=None)
+data_scr = pd.read_csv('/data/CS120/'+subject+'/scr.csv',sep='\t',header=None)
+data_wif = pd.read_csv('/data/CS120/'+subject+'/wif.csv',sep='\t',header=None)
+target = pd.read_csv('/data/CS120/'+subject+'/emm.csv',sep='\t',header=None)
 
 
 # In[30]:
